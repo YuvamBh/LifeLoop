@@ -1,24 +1,35 @@
-//
-//  ContentView.swift
-//  lifeloop
-//
-//  Created by Yuvam Bhargav on 4/19/26.
-//
-
 import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
-}
+        TabView {
+            NavigationStack {
+                HomeView()
+            }
+            .tabItem {
+                Label("Home", systemImage: "house")
+            }
 
-#Preview {
-    ContentView()
+            NavigationStack {
+                CommunityFeedView()
+            }
+            .tabItem {
+                Label("Community", systemImage: "person.2")
+            }
+
+            NavigationStack {
+                MapScreenView()
+            }
+            .tabItem {
+                Label("Map", systemImage: "map")
+            }
+
+            NavigationStack {
+                ProfileView()
+            }
+            .tabItem {
+                Label("Profile", systemImage: "person")
+            }
+        }
+    }
 }
