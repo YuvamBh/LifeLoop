@@ -1,3 +1,10 @@
+//
+//  CommunityFeedView.swift
+//  lifeloop
+//
+//  Created by Yuvam Bhargav on 4/17/26.
+//
+
 import SwiftUI
 import SwiftData
 

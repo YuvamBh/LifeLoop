@@ -1,9 +1,17 @@
+//
+//  HomeView.swift
+//  lifeloop
+//
+//  Created by Yuvam Bhargav on 4/15/26.
+//
+
 import SwiftUI
 import SwiftData
 
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \GrowthLoop.createdAt, order: .reverse) private var loops: [GrowthLoop]
+    @StateObject private var viewModel = LoopViewModel()
 
     var body: some View {
         VStack {
@@ -45,7 +53,9 @@ struct HomeView: View {
                                 .padding(.vertical, 4)
                             }
                         }
-                        .onDelete(perform: deleteLoop)
+                        .onDelete { offsets in
+                            viewModel.deleteLoop(at: offsets, from: loops, context: modelContext)
+                        }
                     }
                 }
             }
@@ -63,17 +73,5 @@ struct HomeView: View {
             }
         }
         .navigationTitle("LifeLoop")
-    }
-
-    private func deleteLoop(at offsets: IndexSet) {
-        for index in offsets {
-            modelContext.delete(loops[index])
-        }
-
-        do {
-            try modelContext.save()
-        } catch {
-            print("Error deleting loop: \(error.localizedDescription)")
-        }
     }
 }

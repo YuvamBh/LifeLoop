@@ -2,9 +2,8 @@
 //  LoopDetailView.swift
 //  lifeloop
 //
-//  Created by Yuvam Bhargav on 4/19/26.
+//  Created by Yuvam Bhargav on 4/15/26.
 //
-
 
 import SwiftUI
 import SwiftData

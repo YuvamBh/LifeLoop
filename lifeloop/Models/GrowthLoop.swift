@@ -1,3 +1,10 @@
+//
+//  GrowthLoop.swift
+//  lifeloop
+//
+//  Created by Yuvam Bhargav on 4/12/26.
+//
+
 import Foundation
 import SwiftData
 
