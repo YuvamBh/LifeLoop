@@ -19,6 +19,10 @@ struct MapScreenView: View {
     @StateObject private var viewModel = LocationViewModel()
     @State private var selectedPlace: Place?
 
+    var filteredPlaces: [Place] {
+        viewModel.filteredPlaces()
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -31,19 +35,38 @@ struct MapScreenView: View {
                         }
                     }
 
-                    ForEach(viewModel.places) { place in
+                    ForEach(filteredPlaces) { place in
                         Annotation(place.name, coordinate: place.coordinate) {
-                            Image(systemName: "mappin.circle.fill")
-                                .foregroundStyle(.red)
+                            Image(systemName: iconName(for: place.category))
+                                .foregroundStyle(colorForCategory(place.category))
                                 .font(.title2)
+                                .onTapGesture {
+                                    selectedPlace = place
+                                }
                         }
                     }
                 }
                 .frame(height: 300)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
 
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Nearby Growth Places")
+                        .font(.headline)
+
+                    Text("Shows parks, libraries, and fitness centers near your current location.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                Picker("Category", selection: $viewModel.selectedCategory) {
+                    ForEach(viewModel.categoryOptions, id: \.self) { option in
+                        Text(option)
+                    }
+                }
+                .pickerStyle(.segmented)
+
                 if viewModel.isLoading {
-                    Text("Loading nearby places...")
+                    Text("Loading nearby growth places...")
                         .foregroundStyle(.secondary)
                 }
 
@@ -62,11 +85,14 @@ struct MapScreenView: View {
                             .font(.title3)
                             .bold()
 
-                        Text(selectedPlace.countryName ?? "Unknown Country")
+                        Text(selectedPlace.displayCategory)
                             .foregroundStyle(.secondary)
 
-                        Text("Population: \(selectedPlace.population ?? 0)")
-                            .font(.caption)
+                        Button("Open in Apple Maps") {
+                            openInMaps(place: selectedPlace)
+                        }
+                        .font(.subheadline)
+                        .padding(.top, 4)
                     }
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -74,36 +100,52 @@ struct MapScreenView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
 
-                Text("Nearby Places")
-                    .font(.headline)
+                HStack {
+                    Text("Results")
+                        .font(.headline)
 
-                if viewModel.places.isEmpty && !viewModel.isLoading {
-                    Text("No nearby places to show.")
+                    Spacer()
+
+                    Text("\(filteredPlaces.count) found")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                if filteredPlaces.isEmpty && !viewModel.isLoading {
+                    Text("No places found for this filter.")
                         .foregroundStyle(.secondary)
                 } else {
                     LazyVStack(spacing: 10) {
-                        ForEach(viewModel.places) { place in
+                        ForEach(filteredPlaces) { place in
                             Button {
                                 selectedPlace = place
                                 viewModel.region = MKCoordinateRegion(
                                     center: place.coordinate,
-                                    span: MKCoordinateSpan(latitudeDelta: 0.3, longitudeDelta: 0.3)
+                                    span: MKCoordinateSpan(latitudeDelta: 0.03, longitudeDelta: 0.03)
                                 )
                             } label: {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(place.name)
-                                        .font(.headline)
-                                        .foregroundStyle(.primary)
+                                HStack(spacing: 12) {
+                                    Image(systemName: iconName(for: place.category))
+                                        .font(.title2)
+                                        .foregroundStyle(colorForCategory(place.category))
+                                        .frame(width: 30)
 
-                                    Text(place.countryName ?? "Unknown Country")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(place.name)
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
 
-                                    Text("Population: \(place.population ?? 0)")
+                                        Text(place.displayCategory)
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+
+                                    Spacer()
+
+                                    Image(systemName: "chevron.right")
                                         .font(.caption)
                                         .foregroundStyle(.gray)
                                 }
-                                .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding()
                                 .background(Color.gray.opacity(0.08))
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -115,9 +157,39 @@ struct MapScreenView: View {
             }
             .padding()
         }
-        .navigationTitle("Nearby Locations")
+        .navigationTitle("Growth Map")
         .onAppear {
             viewModel.requestLocationAccess()
         }
+    }
+
+    private func iconName(for category: String) -> String {
+        if category == "park" {
+            return "leaf.fill"
+        } else if category == "library" {
+            return "books.vertical.fill"
+        } else if category == "fitness" {
+            return "figure.strengthtraining.traditional"
+        } else {
+            return "mappin.circle.fill"
+        }
+    }
+
+    private func colorForCategory(_ category: String) -> Color {
+        if category == "park" {
+            return .green
+        } else if category == "library" {
+            return .purple
+        } else if category == "fitness" {
+            return .orange
+        } else {
+            return .red
+        }
+    }
+
+    private func openInMaps(place: Place) {
+        let item = MKMapItem(placemark: MKPlacemark(coordinate: place.coordinate))
+        item.name = place.name
+        item.openInMaps()
     }
 }

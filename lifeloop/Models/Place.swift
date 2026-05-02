@@ -7,27 +7,46 @@
 
 import Foundation
 
-struct GeoNamesResponse: Codable {
-    let geonames: [Place]
+struct OverpassResponse: Codable {
+    let elements: [OverpassElement]
 }
 
-struct Place: Codable, Identifiable {
-    let geonameId: Int?
-    let name: String
-    let countryName: String?
+struct OverpassElement: Codable {
+    let type: String
+    let id: Int
+    let lat: Double?
+    let lon: Double?
+    let center: OverpassCenter?
+    let tags: OverpassTags?
+}
+
+struct OverpassCenter: Codable {
     let lat: Double
-    let lng: Double
-    let population: Int?
+    let lon: Double
+}
 
-    var id: Int {
-        geonameId ?? Int.random(in: 1...999999)
-    }
+struct OverpassTags: Codable {
+    let name: String?
+    let amenity: String?
+    let leisure: String?
+}
 
-    var latitude: Double {
-        lat
-    }
+struct Place: Identifiable {
+    let id: Int
+    let name: String
+    let category: String
+    let latitude: Double
+    let longitude: Double
 
-    var longitude: Double {
-        lng
+    var displayCategory: String {
+        if category == "park" {
+            return "Park"
+        } else if category == "library" {
+            return "Library"
+        } else if category == "fitness" {
+            return "Fitness Center"
+        } else {
+            return "Place"
+        }
     }
 }
