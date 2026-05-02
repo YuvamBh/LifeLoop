@@ -21,13 +21,19 @@ struct HomeView: View {
         VStack {
             if loops.isEmpty {
                 Spacer()
+
+                Image(systemName: "leaf.circle.fill")
+                    .font(.system(size: 60))
+                    .foregroundStyle(.mint)
+
                 Text("No growth loops yet")
-                    .font(.headline)
-                    .foregroundStyle(.gray)
+                    .font(.system(size: 22, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.primary)
 
                 Text("Tap Add Loop to create your first loop.")
-                    .font(.subheadline)
+                    .font(.system(size: 15, weight: .regular, design: .rounded))
                     .foregroundStyle(.secondary)
+
                 Spacer()
             } else {
                 Picker("Filter", selection: $viewModel.selectedFilter) {
@@ -48,26 +54,26 @@ struct HomeView: View {
                             ForEach(filteredLoops) { loop in
                                 NavigationLink(destination: LoopDetailView(loop: loop)) {
                                     HStack {
-                                        VStack(alignment: .leading, spacing: 4) {
+                                        VStack(alignment: .leading, spacing: 5) {
                                             Text(loop.title)
-                                                .font(.headline)
+                                                .font(.system(size: 18, weight: .semibold, design: .rounded))
 
                                             Text(loop.category)
-                                                .font(.subheadline)
+                                                .font(.system(size: 14, weight: .regular, design: .rounded))
                                                 .foregroundStyle(.secondary)
 
                                             Text(loop.frequency)
-                                                .font(.caption)
+                                                .font(.system(size: 12, weight: .regular, design: .rounded))
                                                 .foregroundStyle(.gray)
                                         }
 
                                         Spacer()
 
-                                        Image(systemName: loop.isCompleted ? "checkmark.square" : "square")
+                                        Image(systemName: loop.isCompleted ? "checkmark.circle.fill" : "circle")
                                             .font(.title3)
-                                            .foregroundStyle(loop.isCompleted ? .green : .gray)
+                                            .foregroundStyle(loop.isCompleted ? .mint : .gray)
                                     }
-                                    .padding(.vertical, 4)
+                                    .padding(.vertical, 6)
                                 }
                             }
                             .onDelete { offsets in
@@ -80,11 +86,11 @@ struct HomeView: View {
 
             NavigationLink(destination: AddLoopView()) {
                 Text("+ Add Loop")
-                    .font(.headline)
+                    .font(.system(size: 17, weight: .semibold, design: .rounded))
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
-                    .foregroundStyle(.white)
+                    .background(Color.mint)
+                    .foregroundStyle(.black)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .padding(.horizontal)
                     .padding(.bottom, 8)

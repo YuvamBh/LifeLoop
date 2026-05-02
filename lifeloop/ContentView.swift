@@ -5,7 +5,6 @@
 //  Created by Yuvam Bhargav on 4/19/26.
 //
 
-
 import SwiftUI
 
 struct ContentView: View {
@@ -39,5 +38,15 @@ struct ContentView: View {
                 Label("Profile", systemImage: "person")
             }
         }
+        .preferredColorScheme(.dark)
+        .tint(.mint)
+        .fontDesign(.rounded)
     }
 }
+
+
+
+
+
+
+

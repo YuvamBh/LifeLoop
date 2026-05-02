@@ -21,15 +21,16 @@ struct CommunityFeedView: View {
         List {
             if reflections.isEmpty {
                 Text("No posts yet")
+                    .font(.system(size: 16, weight: .regular, design: .rounded))
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(reflections) { entry in
                     VStack(alignment: .leading, spacing: 8) {
                         Text(entry.loopTitle)
-                            .font(.headline)
+                            .font(.system(size: 18, weight: .semibold, design: .rounded))
 
                         Text(entry.reflectionText)
-                            .font(.body)
+                            .font(.system(size: 15, weight: .regular, design: .rounded))
 
                         HStack {
                             Text("Mood: \(entry.mood)/10")
@@ -50,7 +51,7 @@ struct CommunityFeedView: View {
                             .font(.caption2)
                             .foregroundStyle(.gray)
                     }
-                    .padding(.vertical, 6)
+                    .padding(.vertical, 8)
                 }
             }
         }
@@ -70,11 +71,9 @@ struct CommunityFeedView: View {
             let newLike = LikedPost(reflectionID: reflectionID)
             modelContext.insert(newLike)
         }
-
+        
         do {
             try modelContext.save()
         } catch {
-            print("Error saving like: \(error.localizedDescription)")
-        }
-    }
-}
+            print("Error saving like: \(error.localizedDescription)")}
+    }}

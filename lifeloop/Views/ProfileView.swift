@@ -2,7 +2,7 @@
 //  ProfileView.swift
 //  lifeloop
 //
-//  Created by Yuvam Bhargav on 4/14/26.
+//  Created by Yuvam Bhargav on 4/26/26.
 //
 
 import SwiftUI
@@ -61,20 +61,19 @@ struct ProfileView: View {
                 VStack(spacing: 8) {
                     Image(systemName: "person.circle.fill")
                         .font(.system(size: 70))
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(.mint)
 
                     Text("Your Profile")
-                        .font(.largeTitle)
-                        .bold()
+                        .font(.system(size: 32, weight: .bold, design: .rounded))
 
                     Text("Your self-growth summary")
-                        .font(.subheadline)
+                        .font(.system(size: 15, weight: .regular, design: .rounded))
                         .foregroundStyle(.secondary)
                 }
 
-                VStack(alignment: .leading, spacing: 12) {
+                cardView {
                     Text("Progress Summary")
-                        .font(.headline)
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
 
                     statRow(title: "Total Loops", value: "\(loops.count)")
                     statRow(title: "Completed Loops", value: "\(completedLoops)")
@@ -85,38 +84,29 @@ struct ProfileView: View {
                     statRow(title: "Completion Rate", value: String(format: "%.0f%%", completionRate))
                     statRow(title: "Progress Level", value: progressLevel)
                 }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.gray.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
 
-                VStack(alignment: .leading, spacing: 10) {
+                cardView {
                     Text("Completion Progress")
-                        .font(.headline)
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
 
                     ProgressView(value: completionRate, total: 100)
-                        .progressViewStyle(.linear)
+                        .tint(.mint)
 
                     Text(String(format: "%.0f%% of your loops are completed", completionRate))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.gray.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
 
-                VStack(alignment: .leading, spacing: 10) {
+                cardView {
                     Text("Latest Reflection")
-                        .font(.headline)
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
 
                     if let latestReflection {
                         Text(latestReflection.loopTitle)
-                            .font(.subheadline)
-                            .bold()
+                            .font(.system(size: 16, weight: .semibold, design: .rounded))
 
                         Text(latestReflection.reflectionText)
-                            .font(.body)
+                            .font(.system(size: 15, weight: .regular, design: .rounded))
 
                         Text("Mood: \(latestReflection.mood)/10")
                             .font(.caption)
@@ -126,23 +116,15 @@ struct ProfileView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.gray.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
 
-                VStack(alignment: .leading, spacing: 10) {
+                cardView {
                     Text("About LifeLoop")
-                        .font(.headline)
+                        .font(.system(size: 20, weight: .semibold, design: .rounded))
 
                     Text("LifeLoop helps users create growth loops, track completion, save reflections, like community posts, and discover nearby places using map and web API data.")
-                        .font(.subheadline)
+                        .font(.system(size: 15, weight: .regular, design: .rounded))
                         .foregroundStyle(.secondary)
                 }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.gray.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
             }
             .padding()
         }
@@ -152,9 +134,23 @@ struct ProfileView: View {
     private func statRow(title: String, value: String) -> some View {
         HStack {
             Text(title)
+                .font(.system(size: 15, weight: .regular, design: .rounded))
+
             Spacer()
+
             Text(value)
-                .bold()
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                .foregroundStyle(.mint)
         }
+    }
+
+    private func cardView<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            content()
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.white.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 }

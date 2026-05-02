@@ -20,22 +20,21 @@ struct LoopDetailView: View {
             Section {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(loop.title)
-                        .font(.largeTitle)
-                        .bold()
+                        .font(.system(size: 30, weight: .bold, design: .rounded))
 
                     Text("Category: \(loop.category)")
-                        .font(.headline)
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
 
                     Text("Goal: \(loop.goal)")
-                        .font(.subheadline)
+                        .font(.system(size: 15, weight: .regular, design: .rounded))
 
                     Text("Frequency: \(loop.frequency)")
-                        .font(.subheadline)
+                        .font(.system(size: 15, weight: .regular, design: .rounded))
                         .foregroundStyle(.secondary)
 
                     Text("Status: \(loop.isCompleted ? "Completed" : "Not Completed")")
-                        .font(.subheadline)
-                        .foregroundStyle(loop.isCompleted ? .green : .red)
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .foregroundStyle(loop.isCompleted ? .mint : .red)
                 }
                 .padding(.vertical, 4)
             }
@@ -53,7 +52,10 @@ struct LoopDetailView: View {
 
                 VStack(alignment: .leading) {
                     Text("Mood (\(Int(reflectionViewModel.mood))/10)")
+                        .font(.system(size: 15, weight: .regular, design: .rounded))
+
                     Slider(value: $reflectionViewModel.mood, in: 1...10, step: 1)
+                        .tint(.mint)
                 }
 
                 Button("Save Entry") {
