@@ -15,8 +15,7 @@ struct LifeLoopApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [GrowthLoop.self, ReflectionEntry.self])
+        .modelContainer(for: [GrowthLoop.self, ReflectionEntry.self, LikedPost.self])
     }
 }
-
 

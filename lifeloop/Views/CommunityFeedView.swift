@@ -9,10 +9,13 @@ import SwiftUI
 import SwiftData
 
 struct CommunityFeedView: View {
+    @Environment(\.modelContext) private var modelContext
+
     @Query(sort: \ReflectionEntry.createdAt, order: .reverse)
     private var reflections: [ReflectionEntry]
 
-    @State private var likedPosts: Set<UUID> = []
+    @Query
+    private var likedPosts: [LikedPost]
 
     var body: some View {
         List {
@@ -38,7 +41,7 @@ struct CommunityFeedView: View {
                             Button {
                                 toggleLike(entry.id)
                             } label: {
-                                Image(systemName: likedPosts.contains(entry.id) ? "heart.fill" : "heart")
+                                Image(systemName: isLiked(entry.id) ? "heart.fill" : "heart")
                                     .foregroundStyle(.red)
                             }
                         }
@@ -54,11 +57,24 @@ struct CommunityFeedView: View {
         .navigationTitle("Community Feed")
     }
 
-    private func toggleLike(_ id: UUID) {
-        if likedPosts.contains(id) {
-            likedPosts.remove(id)
+    private func isLiked(_ reflectionID: UUID) -> Bool {
+        likedPosts.contains { likedPost in
+            likedPost.reflectionID == reflectionID
+        }
+    }
+
+    private func toggleLike(_ reflectionID: UUID) {
+        if let existingLike = likedPosts.first(where: { $0.reflectionID == reflectionID }) {
+            modelContext.delete(existingLike)
         } else {
-            likedPosts.insert(id)
+            let newLike = LikedPost(reflectionID: reflectionID)
+            modelContext.insert(newLike)
+        }
+
+        do {
+            try modelContext.save()
+        } catch {
+            print("Error saving like: \(error.localizedDescription)")
         }
     }
 }

@@ -14,9 +14,11 @@ final class LoopViewModel: ObservableObject {
     @Published var category: String = "Wellness"
     @Published var goal: String = ""
     @Published var frequency: String = "Daily"
+    @Published var selectedFilter: String = "All"
 
     let categories = ["Wellness", "Reading", "Study", "Exercise", "Mindfulness"]
     let frequencies = ["Daily", "Weekly"]
+    let filterOptions = ["All", "Active", "Completed"]
 
     func clearForm() {
         title = ""
@@ -28,6 +30,16 @@ final class LoopViewModel: ObservableObject {
     func isValidLoop() -> Bool {
         !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !goal.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    func filteredLoops(from loops: [GrowthLoop]) -> [GrowthLoop] {
+        if selectedFilter == "Completed" {
+            return loops.filter { $0.isCompleted }
+        } else if selectedFilter == "Active" {
+            return loops.filter { !$0.isCompleted }
+        } else {
+            return loops
+        }
     }
 
     func addLoop(context: ModelContext) {
@@ -61,8 +73,10 @@ final class LoopViewModel: ObservableObject {
     }
 
     func deleteLoop(at offsets: IndexSet, from loops: [GrowthLoop], context: ModelContext) {
+        let filteredLoops = filteredLoops(from: loops)
+
         for index in offsets {
-            context.delete(loops[index])
+            context.delete(filteredLoops[index])
         }
 
         do {
