@@ -2,11 +2,12 @@
 //  LoopDetailView.swift
 //  lifeloop
 //
-//  Created by Yuvam Bhargav on 4/15/26.
+//  Created by Yuvam Bhargav on 4/29/26.
 //
 
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 struct LoopDetailView: View {
     @Environment(\.modelContext) private var modelContext
@@ -14,6 +15,8 @@ struct LoopDetailView: View {
     @Bindable var loop: GrowthLoop
     @StateObject private var loopViewModel = LoopViewModel()
     @StateObject private var reflectionViewModel = ReflectionViewModel()
+
+    @State private var selectedPhoto: PhotosPickerItem?
 
     var body: some View {
         Form {
@@ -58,8 +61,22 @@ struct LoopDetailView: View {
                         .tint(.mint)
                 }
 
+                PhotosPicker(selection: $selectedPhoto, matching: .images) {
+                    Label("Add Picture", systemImage: "photo")
+                }
+
+                if let imageData = reflectionViewModel.imageData,
+                   let uiImage = UIImage(data: imageData) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 160)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+
                 Button("Save Entry") {
                     reflectionViewModel.saveReflection(for: loop, context: modelContext)
+                    selectedPhoto = nil
                 }
                 .disabled(!reflectionViewModel.isValidReflection())
             }
@@ -67,5 +84,12 @@ struct LoopDetailView: View {
             ReflectionListView(loopTitle: loop.title)
         }
         .navigationTitle("Loop Detail")
+        .onChange(of: selectedPhoto) { _, newItem in
+            Task {
+                if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                    reflectionViewModel.imageData = data
+                }
+            }
+        }
     }
 }

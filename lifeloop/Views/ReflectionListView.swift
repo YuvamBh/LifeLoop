@@ -2,7 +2,7 @@
 //  ReflectionListView.swift
 //  lifeloop
 //
-//  Created by Yuvam Bhargav on 4/14/26.
+//  Created by Yuvam Bhargav on 4/29/26.
 //
 
 import SwiftUI
@@ -24,9 +24,18 @@ struct ReflectionListView: View {
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(filteredReflections) { entry in
-                    VStack(alignment: .leading, spacing: 6) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        if let imageData = entry.imageData,
+                           let uiImage = UIImage(data: imageData) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(height: 150)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+
                         Text(entry.reflectionText)
-                            .font(.body)
+                            .font(.system(size: 15, weight: .regular, design: .rounded))
 
                         Text("Mood: \(entry.mood)/10")
                             .font(.caption)

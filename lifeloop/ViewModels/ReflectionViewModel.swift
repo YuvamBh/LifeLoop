@@ -2,7 +2,7 @@
 //  ReflectionViewModel.swift
 //  lifeloop
 //
-//  Created by Yuvam Bhargav on 4/11/26.
+//  Created by Yuvam Bhargav on 4/29/26.
 //
 
 import Foundation
@@ -12,10 +12,12 @@ import Combine
 final class ReflectionViewModel: ObservableObject {
     @Published var reflectionText: String = ""
     @Published var mood: Double = 5.0
+    @Published var imageData: Data?
 
     func clearForm() {
         reflectionText = ""
         mood = 5.0
+        imageData = nil
     }
 
     func isValidReflection() -> Bool {
@@ -23,12 +25,20 @@ final class ReflectionViewModel: ObservableObject {
     }
 
     func saveReflection(for loop: GrowthLoop, context: ModelContext) {
+        saveReflection(
+            loopTitle: loop.title,
+            context: context
+        )
+    }
+
+    func saveReflection(loopTitle: String, context: ModelContext) {
         guard isValidReflection() else { return }
 
         let newReflection = ReflectionEntry(
-            loopTitle: loop.title,
+            loopTitle: loopTitle,
             reflectionText: reflectionText,
-            mood: Int(mood)
+            mood: Int(mood),
+            imageData: imageData
         )
 
         context.insert(newReflection)

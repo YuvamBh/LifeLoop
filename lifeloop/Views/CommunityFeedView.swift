@@ -2,7 +2,7 @@
 //  CommunityFeedView.swift
 //  lifeloop
 //
-//  Created by Yuvam Bhargav on 4/17/26.
+//  Created by Yuvam Bhargav on 4/29/26.
 //
 
 import SwiftUI
@@ -26,6 +26,15 @@ struct CommunityFeedView: View {
             } else {
                 ForEach(reflections) { entry in
                     VStack(alignment: .leading, spacing: 8) {
+                        if let imageData = entry.imageData,
+                           let uiImage = UIImage(data: imageData) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(height: 180)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+
                         Text(entry.loopTitle)
                             .font(.system(size: 18, weight: .semibold, design: .rounded))
 
@@ -56,6 +65,11 @@ struct CommunityFeedView: View {
             }
         }
         .navigationTitle("Community Feed")
+        .toolbar {
+            NavigationLink(destination: AddCommunityPostView()) {
+                Image(systemName: "plus")
+            }
+        }
     }
 
     private func isLiked(_ reflectionID: UUID) -> Bool {
@@ -71,9 +85,11 @@ struct CommunityFeedView: View {
             let newLike = LikedPost(reflectionID: reflectionID)
             modelContext.insert(newLike)
         }
-        
+
         do {
             try modelContext.save()
         } catch {
-            print("Error saving like: \(error.localizedDescription)")}
-    }}
+            print("Error saving like: \(error.localizedDescription)")
+        }
+    }
+}
